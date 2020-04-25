@@ -2,7 +2,7 @@
 // @name         添加评分按钮
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      0.3
+// @version      0.31
 // @description  对LK添加一些默认的评分按钮 可自行修改设置
 // @author       Hugo0
 // @require      https://greasyfork.org/scripts/401963/code/user.js

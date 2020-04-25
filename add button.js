@@ -3,7 +3,7 @@
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
 // @version      0.3
-// @description  对LK添加一些默认的评分按钮 目前点击后要手动刷新才能看到评分 可自行修改设置
+// @description  对LK添加一些默认的评分按钮 可自行修改设置
 // @author       Hugo0
 // @require      https://greasyfork.org/scripts/401963/code/user.js
 // @match        https://www.lightnovel.cn/*

@@ -2,7 +2,7 @@
 // @name         添加评分按钮
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      0.2
+// @version      0.3
 // @description  对LK添加一些默认的评分按钮 目前点击后要手动刷新才能看到评分 可自行修改设置
 // @author       Hugo0
 // @match        https://www.lightnovel.cn/*
@@ -26,9 +26,17 @@ function rate(obj, formhash, tid, handlekey, score2, reason, sendreasonpm) {
         body: data
     }).then(res => res.text()).then(res => {
         var text = res.split("<![CDATA[")[1].split("<script")[0];
-        console.log(text);
         if (text == "") {text = "评分成功"}
         showPrompt(null, null, text, 2000);
+        if (text == "评分成功") {
+            fetch(window.location.href).then(res => res.text()).then(res => {
+                var domparser = new DOMParser();
+                var doc = domparser.parseFromString(res, "text/html");
+                var content = obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.children[0].children[1];
+                var newContent = doc.getElementById("pid"+pid).children[0].children[0].children[1];
+                content.innerHTML = newContent.innerHTML;
+            });
+        }
     });
 }
 

@@ -16,14 +16,21 @@ var sendreasonpm = true;                          //  是否提醒作者
 
 function rate(obj, formhash, tid, handlekey, score2, reason, sendreasonpm) {
     var pid = obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replace("pid", "");
-    console.log("rate"+score2+" pid="+pid);
-    var referer = "https%3A%2F%2Fwww.lightnovel.cn%2Fforum.php%3Fmod%3Dviewthread%26tid%3D"+tid+"%26page%3D0%23pid"+pid;
-    var data = "formhash="+formhash+"&tid="+tid+"&pid="+pid+"&referer="+referer+"&handlekey="+handlekey+"&score2="+score2+"&reason="+reason;
-    if (sendreasonpm == true) {data = data + "&sendreasonpm=on";}
-    var httpRequest = new XMLHttpRequest();
-    httpRequest.open('POST', 'https://www.lightnovel.cn/forum.php?mod=misc&action=rate&ratesubmit=yes&infloat=yes&inajax=1', true);
-    httpRequest.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-    httpRequest.send(data);
+    score2 = -1;
+    console.log("rate="+score2+" pid="+pid);
+    var data;
+    if (sendreasonpm == true) {data = `formhash=${formhash}&tid=${tid}&pid=${pid}&score2=${score2}&reason=${encodeURIComponent(reason)}&sendreasonpm=on`;}
+    else {data = data = `formhash=${formhash}&tid=${tid}&pid=${pid}&score2=${score2}&reason=${encodeURIComponent(reason)}`;}
+    fetch("forum.php?mod=misc&action=rate&ratesubmit=yes&infloat=yes&inajax=1", {
+        method: 'POST',
+        headers: {'content-type': 'application/x-www-form-urlencoded'},
+        body: data
+    }).then(res => res.text()).then(res => {
+        var text = res.split("<![CDATA[")[1].split("<script")[0];
+        console.log(text);
+        if (text == "") {text = "评分成功"}
+        showPrompt(null, null, text, 2000);
+    });
 }
 
 var formhash = document.getElementsByName("formhash")[0].value;

@@ -16,7 +16,6 @@ var sendreasonpm = true;                          //  是否提醒作者
 
 function rate(obj, formhash, tid, handlekey, score2, reason, sendreasonpm) {
     var pid = obj.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.id.replace("pid", "");
-    score2 = -1;
     console.log("rate="+score2+" pid="+pid);
     var data;
     if (sendreasonpm == true) {data = `formhash=${formhash}&tid=${tid}&pid=${pid}&score2=${score2}&reason=${encodeURIComponent(reason)}&sendreasonpm=on`;}

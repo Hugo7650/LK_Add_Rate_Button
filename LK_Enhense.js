@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         添加评分按钮
+// @name         LK增强
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
 // @version      1.0

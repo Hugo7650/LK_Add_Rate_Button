@@ -2,7 +2,7 @@
 // @name         LK增强
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      1.0
+// @version      1.01
 // @description  对LK添加一些评分按钮 页面自动刷新 上传图片到图床的动能
 // @require      https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js
 // @author       Hugo0
@@ -197,7 +197,7 @@ function subimtImg() {
         url: `https://img.vim-cn.com/`,
         data: fd,
         onload: response => {
-            text = "[img]"+response.response+"[/img]";
+            text = "[img]"+response.response.replace("\n", "")+"[/img]";
             navigator.clipboard.writeText(text);
             showPrompt(null, null, "上传成功， 代码已复制到剪贴板中", 2000);
             let menu = document.querySelector("#postimg_menu");

@@ -6,6 +6,7 @@
 // @description  对LK添加一些评分按钮 页面自动刷新 上传图片到图床的动能
 // @require      https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js
 // @author       Hugo0
+// @license      GPL-3.0
 // @match        https://www.lightnovel.cn/*
 // @match        https://www.lightnovel.us/*
 // @grant        GM.xmlHttpRequest

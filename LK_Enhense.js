@@ -9,7 +9,7 @@
 // @license      GPL-3.0
 // @match        https://www.lightnovel.cn/*
 // @match        https://www.lightnovel.us/*
-// @grant        GM.xmlHttpRequest
+// @grant        GM.xmlhttpRequest
 // ==/UserScript==
 
 

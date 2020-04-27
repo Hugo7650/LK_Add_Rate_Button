@@ -193,9 +193,9 @@ function refreshPage() {
 function showSubmitImgWindow() {
     let append_parent = document.querySelector("#append_parent")
     let menu = document.createElement("div");
-    menu.innerHTML = "<div id=\"postimg_menu\" class=\"p_pof upf\" style=\"width: 180px; position: fixed; z-index: 301; cursor: move; left: 40%; top: 40%;\" initialized=\"true\">\
+    menu.innerHTML = "<div id=\"postimg_menu\" class=\"p_pof upf\" style=\"width: 240px; position: fixed; z-index: 301; cursor: move; left: 40%; top: 40%;\" initialized=\"true\">\
     <span class=\"y\"><a class=\"flbc\" href=\"javascript:;\">关闭</a></span>\
-    <div class=\"p_opt cl\"><div>请选择图片:<br><input type=\"file\" id=\"imgfile\"></div>\
+    <div class=\"p_opt cl\"><div>请选择图片或者Ctrl+V粘贴图片:<br><input type=\"file\" id=\"imgfile\"></div>\
     <div class=\"pns mtn\">\
     <button type=\"submit\" id=\"postimg_submit\" class=\"pn pnc\"><strong>提交</strong></button>\
     <button type=\"button\" class=\"pn\"><em>取消</em></button></div></div></div>";

@@ -2,8 +2,8 @@
 // @name         LK增强
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      1.11
-// @description  对LK添加一些评分按钮 页面自动刷新 上传图片到图床的动能
+// @version      1.20
+// @description  对LK添加一些评分按钮 页面自动刷新 上传本地/粘贴图片到图床的动能
 // @require      https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js
 // @author       Hugo0
 // @license      GPL-3.0
@@ -167,7 +167,7 @@ function intervalRefresh() {
             }
         }
         if (document.querySelector("#ct > div.pgbtn") == null && doc.querySelector("#ct > div.pgbtn") != null) {
-            let nextPage = doc.querySelector("#ct > div.pgbtn").node;
+            let nextPage = doc.querySelector("#ct > div.pgbtn");
             let pages = document.querySelector("#ct > div.pgs.mtm.mbm.cl");
             pages.parentElement.insertBefore(nextPage, pages);
         }
@@ -200,10 +200,19 @@ function showSubmitImgWindow() {
     <button type=\"submit\" id=\"postimg_submit\" class=\"pn pnc\"><strong>提交</strong></button>\
     <button type=\"button\" class=\"pn\"><em>取消</em></button></div></div></div>";
     menu = menu.children[0];
+    menu.onpaste = function(a) {pasteImg(a)};
     menu.children[1].children[1].children[0].onclick = function() {subimtImg()};
     menu.children[0].children[0].onclick = function() {removeWindow()};
     menu.children[1].children[1].children[1].onclick = function() {removeWindow()};
     append_parent.appendChild(menu);
+}
+
+function pasteImg(a) {
+    let b=a.clipboardData;
+    if(b.files.length>0) {
+        document.getElementById('imgfile').files=b.files;
+        document.getElementById('postimg_submit').onclick();
+    }
 }
 
 function subimtImg() {

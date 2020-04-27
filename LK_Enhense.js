@@ -2,7 +2,7 @@
 // @name         LK增强
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      1.01
+// @version      1.10
 // @description  对LK添加一些评分按钮 页面自动刷新 上传图片到图床的动能
 // @require      https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js
 // @author       Hugo0
@@ -35,7 +35,7 @@ GM_config.init({
         'refreshInterval': {
             'label': '定时刷新间隔/s(0为不刷新)',
             'type': 'int',
-            'default': 3
+            'default': 10
         },
         'refreshonly': {
             'label': '只刷薪水楼',
@@ -87,7 +87,10 @@ setting.textContent = "LK增强设置";
 setting.addEventListener("click", () => {GM_config.open(); });
 z.insertBefore(setting, z.children[3]);
 
+let url = window.location.href;
 let title = document.querySelector("#thread_subject").textContent;
+let page = document.querySelector("#pgt > div > div > label > input").value;
+let postOffset = 0;
 
 if (refreshInterval != 0 && (!refreshonly || title.includes("水楼"))) {
     refreshId = window.setInterval(intervalRefresh, refreshInterval);
@@ -145,20 +148,35 @@ function rate(obj, formhash, tid, handlekey, score2, reason, sendreasonpm) {
 }
 
 function intervalRefresh() {
-    fetch(window.location.href).then(res => res.text()).then(res => {
+    fetch(url).then(res => res.text()).then(res => {
         let domparser = new DOMParser();
         let doc = domparser.parseFromString(res, "text/html");
         addButton(doc);
-        let postNum = document.getElementsByClassName("plhin").length;
-        let newPostNum = doc.getElementsByClassName("plhin").length;
-        for (let i = postNum; i < newPostNum; i++) {
-            let newPost = doc.getElementsByClassName("plhin")[i];
-            document.getElementById("postlist").appendChild(newPost);
+        let postList = document.querySelector("#postlist");
+        let newPostList = doc.querySelector("#postlist").children;
+        var newPostArray = new Array();
+        for (let newPost of newPostList) {
+            if (newPost.id.includes("post_")) {newPostArray.push(newPost)}
         }
-        if (postNum < 20 && newPostNum == 20) {
+        for (let newPost of newPostArray) {
+            let post = document.getElementById(newPost.id);
+            if (post == null) {
+                postList.appendChild(newPost);
+            } else {
+                
+            }
+        }
+        if (document.querySelector("#ct > div.pgbtn") == null && doc.querySelector("#ct > div.pgbtn") != null) {
             let nextPage = doc.querySelector("#ct > div.pgbtn").node;
             let pages = document.querySelector("#ct > div.pgs.mtm.mbm.cl");
             pages.parentElement.insertBefore(nextPage, pages);
+        }
+        if (doc.querySelector("#ct > div.pgbtn") != null) {
+            url = doc.querySelector("#ct > div.pgbtn > a").href;
+            postOffset += 20;
+            let pages = document.querySelector("#ct > div.pgs.mtm.mbm.cl");
+            pages.removeChild(pages.firstElementChild);
+            pages.insertBefore(doc.querySelector("#ct > div.pgs.mtm.mbm.cl").firstElementChild, pages.firstElementChild);
         }
     });
 }

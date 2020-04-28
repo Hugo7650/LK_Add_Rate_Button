@@ -2,8 +2,8 @@
 // @name         LK增强
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      1.21
-// @description  对LK添加一些评分按钮 页面自动刷新 上传本地/粘贴图片到图床的动能
+// @version      1.22
+// @description  对LK添加一些评分按钮 页面自动刷新 上传本地/粘贴图片到图床(vim-cn)的动能
 // @require      https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js
 // @author       Hugo0
 // @license      GPL-3.0
@@ -38,7 +38,7 @@ GM_config.init({
             'default': 10
         },
         'refreshonly': {
-            'label': '只刷薪水楼',
+            'label': '只刷新水楼',
             'type': 'checkbox',
             'default': true
         }
@@ -115,7 +115,7 @@ function addButton(doc) {
 
     let scrolltop = doc.querySelector("#scrolltop");
     let span = doc.createElement("span");
-    span.innerHTML = "<a class=\"fmg\" title=\"上传图床\" style=\"background: url(https://www.lightnovel.cn/static/image/editor/editor.gif) no-repeat; background-position: -43px -80px\"><b>上传图床</b></a>"
+    span.innerHTML = "<a class=\"fmg\" title=\"上传图床\" style=\"background: url(https://www.lightnovel.cn/static/image/editor/editor.gif) no-repeat; background-position: -40px -79px\"><b>上传图床</b></a>"
     let imgButton = span.children[0];
     imgButton.onclick = function() {showSubmitImgWindow()};
     scrolltop.insertBefore(span, scrolltop.firstChild);

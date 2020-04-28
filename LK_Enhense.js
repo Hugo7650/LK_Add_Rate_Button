@@ -2,7 +2,7 @@
 // @name         LK增强
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      1.20
+// @version      1.21
 // @description  对LK添加一些评分按钮 页面自动刷新 上传本地/粘贴图片到图床的动能
 // @require      https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js
 // @author       Hugo0
@@ -161,9 +161,7 @@ function intervalRefresh() {
         for (let newPost of newPostArray) {
             let post = document.getElementById(newPost.id);
             if (post == null) {
-                postList.appendChild(newPost);
-            } else {
-                
+                postList.insertBefore(newPost, postList.lastChild);
             }
         }
         if (document.querySelector("#ct > div.pgbtn") == null && doc.querySelector("#ct > div.pgbtn") != null) {

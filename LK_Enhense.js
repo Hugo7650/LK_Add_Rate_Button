@@ -161,7 +161,7 @@ function intervalRefresh() {
         for (let newPost of newPostArray) {
             let post = document.getElementById(newPost.id);
             if (post == null) {
-                postList.insertBefore(newPost, postList.lastChild);
+                postList.insertBefore(newPost, postList.lastElementChild);
             }
         }
         if (document.querySelector("#ct > div.pgbtn") == null && doc.querySelector("#ct > div.pgbtn") != null) {

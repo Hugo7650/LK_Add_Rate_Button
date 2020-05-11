@@ -2,8 +2,8 @@
 // @name         LK增强
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      1.22
-// @description  对LK添加一些评分按钮 页面自动刷新 上传本地/粘贴图片到图床(vim-cn)的动能
+// @version      1.30
+// @description  对LK添加一些评分按钮 页面自动刷新 上传本地/粘贴图片到图床(vim-cn) 分页 回帖跳转的动能
 // @require      https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js
 // @author       Hugo0
 // @license      GPL-3.0
@@ -41,6 +41,21 @@ GM_config.init({
             'label': '只刷新水楼',
             'type': 'checkbox',
             'default': true
+        },
+        'numPostPerPage': {
+            'label': '每页贴子数',
+            'type': 'int',
+            'default': 5
+        },
+        'hotKey': {
+            'label': '翻页快捷键(←,→)',
+            'type': 'checkbox',
+            'default': true
+        },
+        'replayJump': {
+            'label': '回复跳转到页面底部(关闭后会看不到底部自己的回复)',
+            'type': 'checkbox',
+            'default': true
         }
     },
     'css': '#LK_Enhense textarea { width: 100%; height: auto; }',
@@ -59,6 +74,9 @@ GM_config.init({
             reason = GM_config.get('reason');
             sendreasonpm = GM_config.get('sendreasonpm');
             refreshonly = GM_config.get('refreshonly');
+            numPostPerPage = GM_config.get('numPostPerPage');
+            hotKey = GM_config.get('hotKey');
+            replayJump = GM_config.get('replayJump');
             title = document.querySelector("#thread_subject").textContent;
             refreshPage();
             if (refreshInterval != newrefreshInterval) {
@@ -77,7 +95,11 @@ let reason = GM_config.get('reason');
 let sendreasonpm = GM_config.get('sendreasonpm');
 let refreshInterval = GM_config.get('refreshInterval')*1000;
 let refreshonly = GM_config.get('refreshonly');
+let numPostPerPage = GM_config.get('numPostPerPage');
+let hotKey = GM_config.get('hotKey');
+let replayJump = GM_config.get('replayJump');
 let refreshId = 0;
+let curpage = 1;
 
 // 添加设置按钮
 let z = document.querySelector("#toptb > div > div.z");
@@ -98,6 +120,51 @@ if (refreshInterval != 0 && (!refreshonly || title.includes("水楼"))) {
 
 let formhash = document.getElementsByName("formhash")[0].value;
 addButton(document);
+setPages(curpage);
+
+let modactions = document.querySelector("#modactions");
+let changePage = document.createElement("div");
+changePage.className = "pgbtn s";
+changePage.innerHTML = "<a id = \"lastPage\" class=\"bm_h l\" style=\"width:47.5%; float:left\">« 上一小页</a><a id = \"nextPage\" class=\"bm_h n\" style=\"width:47.5%; float:right\">下一小页 »</a>";
+changePage.children[0].onclick = function() {
+    let newPage = setPages(curpage-1);
+    if (newPage != -1) {
+        curpage = newPage
+    }
+};
+changePage.children[1].onclick = function() {
+    let newPage = setPages(curpage+1);
+    if (newPage != -1) {
+        curpage = newPage
+    }
+};
+modactions.parentElement.insertBefore(changePage, modactions.nextElementSibling);
+if (hotKey) {
+    document.addEventListener("keydown", (e) => {
+        if (e.keyCode == 37) {
+            let newPage = setPages(curpage-1);
+            if (newPage != -1) {
+                curpage = newPage
+            }
+        }
+        else if (e.keyCode == 39) {
+            let newPage = setPages(curpage+1);
+            if (newPage != -1) {
+                curpage = newPage
+            }
+        }
+    });
+    let keyup = document.onkeyup;
+    document.onkeyup = null;
+    document.addEventListener("keyup", (e) => {
+        if (e.keyCode == 37 && curpage == 1) {
+            document.addEventListener("keyup", keyup);
+        }
+        else {
+            document.removeEventListener("keyup", keyup);
+        }
+    });
+}
 
 function addButton(doc) {
     let plhin = doc.getElementsByClassName("plhin");
@@ -115,10 +182,16 @@ function addButton(doc) {
 
     let scrolltop = doc.querySelector("#scrolltop");
     let span = doc.createElement("span");
-    span.innerHTML = "<a class=\"fmg\" title=\"上传图床\" style=\"background: url(https://www.lightnovel.cn/static/image/editor/editor.gif) no-repeat; background-position: -40px -79px\"><b>上传图床</b></a>"
+    span.innerHTML = "<a class=\"fmg\" title=\"上传图床\" style=\"background: url(https://www.lightnovel.cn/static/image/editor/editor.gif) no-repeat; background-position: -40px -79px\"><b>上传图床</b></a>";
     let imgButton = span.children[0];
     imgButton.onclick = function() {showSubmitImgWindow()};
     scrolltop.insertBefore(span, scrolltop.firstChild);
+
+    if (replayJump) {
+        document.querySelector("#postlistreply").hidden=false;
+    } else {
+        document.querySelector("#postlistreply").hidden=true;
+    }
 }
 
 function rate(obj, formhash, tid, handlekey, score2, reason, sendreasonpm) {
@@ -161,7 +234,11 @@ function intervalRefresh() {
         for (let newPost of newPostArray) {
             let post = document.getElementById(newPost.id);
             if (post == null) {
-                postList.insertBefore(newPost, postList.lastElementChild);
+                if (postList.lastElementChild.id == "postlistreply") {
+                    postList.insertBefore(newPost, postList.lastElementChild);
+                } else {
+                    postList.appendChild(newPost);
+                }
             }
         }
         if (document.querySelector("#ct > div.pgbtn") == null && doc.querySelector("#ct > div.pgbtn") != null) {
@@ -176,6 +253,7 @@ function intervalRefresh() {
             pages.removeChild(pages.firstElementChild);
             pages.insertBefore(doc.querySelector("#ct > div.pgs.mtm.mbm.cl").firstElementChild, pages.firstElementChild);
         }
+        setPages(curpage);
     });
 }
 
@@ -185,6 +263,7 @@ function refreshPage() {
         let doc = domparser.parseFromString(res, "text/html");
         addButton(doc);
         document.getElementById("postlist").innerHTML = doc.getElementById("postlist").innerHTML;
+        setPages(curpage);
     });
 }
 
@@ -234,4 +313,27 @@ function subimtImg() {
 function removeWindow() {
     let menu = document.querySelector("#postimg_menu");
     menu.parentElement.removeChild(menu);
+}
+
+function setPages(p) {
+    let posts = []
+    let postList = document.querySelector("#postlist").children;
+    for (let i of postList) {
+        if (i.id.includes("post_")) {
+            posts.push(i);
+        }
+    }
+    let minPost = (p-1)*numPostPerPage;
+    let maxPost = Math.min(p*numPostPerPage, posts.length);
+    if (p < 1 || minPost >= posts.length) {
+        return -1;
+    }
+    for (let i = 0; i < posts.length; i++) {
+        if (i >= minPost && i < maxPost) {
+            posts[i].hidden=false;
+        } else {
+            posts[i].hidden=true;
+        }
+    }
+    return p;
 }

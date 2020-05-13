@@ -2,7 +2,7 @@
 // @name         LK增强
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      1.30
+// @version      1.31
 // @description  对LK添加一些评分按钮 页面自动刷新 上传本地/粘贴图片到图床(vim-cn) 分页 回帖跳转的动能
 // @require      https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js
 // @author       Hugo0
@@ -129,13 +129,15 @@ changePage.innerHTML = "<a id = \"lastPage\" class=\"bm_h l\" style=\"width:47.5
 changePage.children[0].onclick = function() {
     let newPage = setPages(curpage-1);
     if (newPage != -1) {
-        curpage = newPage
+        curpage = newPage;
+        scrollToPost("down");
     }
 };
 changePage.children[1].onclick = function() {
     let newPage = setPages(curpage+1);
     if (newPage != -1) {
-        curpage = newPage
+        curpage = newPage;
+        scrollToPost("top");
     }
 };
 modactions.parentElement.insertBefore(changePage, modactions.nextElementSibling);
@@ -144,13 +146,15 @@ if (hotKey) {
         if (e.keyCode == 37) {
             let newPage = setPages(curpage-1);
             if (newPage != -1) {
-                curpage = newPage
+                curpage = newPage;
+                scrollToPost("down");
             }
         }
         else if (e.keyCode == 39) {
             let newPage = setPages(curpage+1);
             if (newPage != -1) {
-                curpage = newPage
+                curpage = newPage;
+                scrollToPost("top");
             }
         }
     });
@@ -164,6 +168,10 @@ if (hotKey) {
             document.removeEventListener("keyup", keyup);
         }
     });
+}
+
+if (document.location.hash.includes("#pid")) {
+    scrollToPost(document.location.hash);
 }
 
 function addButton(doc) {
@@ -336,4 +344,34 @@ function setPages(p) {
         }
     }
     return p;
+}
+
+function scrollToPost(p) {
+    let pagelist = document.querySelector("#postlist").children;
+    if (p == "top") {
+        for (let i of pagelist) {
+            if (i.hidden == false) {
+                i.scrollIntoView();
+                return;
+            }
+        }
+    } else if (p == "down") {
+        for (let i = pagelist.length-1; i >= 0; i -= 1) {
+            if (pagelist[i].hidden == false) {
+                pagelist[i].scrollIntoView();
+                return;
+            }
+        }
+    } else if (p.includes("#pid")) {
+        let id = p.replace("#pid", "post_");
+        for (let i = 1; i < pagelist.length-1; i += 1) {
+            if (pagelist[i+1].id == id) {
+                let page = Math.ceil(i/numPostPerPage);
+                setPages(page);
+                pagelist[i+1].scrollIntoView();
+                return;
+            }
+        }
+        showPrompt(null, null, "未找到该楼层", 2000);
+    }
 }

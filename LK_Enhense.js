@@ -48,7 +48,7 @@ GM_config.init({
             'default': 5
         },
         'hotKey': {
-            'label': '翻页快捷键(←,→)',
+            'label': '翻页快捷键(←,→)(可跨页)',
             'type': 'checkbox',
             'default': true
         },

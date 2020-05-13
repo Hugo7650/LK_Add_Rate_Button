@@ -368,7 +368,7 @@ function scrollToPost(p) {
             if (pagelist[i+1].id == id) {
                 let page = Math.ceil(i/numPostPerPage);
                 setPages(page);
-                curpage = page；
+                curpage = page;
                 pagelist[i+1].scrollIntoView();
                 return;
             }

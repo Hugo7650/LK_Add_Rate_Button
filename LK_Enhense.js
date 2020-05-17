@@ -2,7 +2,7 @@
 // @name         LK增强
 // @namespace    https://www.lightnovel.cn/
 // @namespace    https://www.lightnovel.us/
-// @version      1.32
+// @version      1.33
 // @description  对LK添加一些评分按钮 页面自动刷新 上传本地/粘贴图片到图床(vim-cn) 分页 回帖跳转的动能
 // @require      https://greasyfork.org/scripts/28536-gm-config/code/GM_config.js
 // @author       Hugo0
@@ -141,7 +141,7 @@ changePage.children[1].onclick = function() {
     }
 };
 modactions.parentElement.insertBefore(changePage, modactions.nextElementSibling);
-if (hotKey) {
+if (hotKey && document.activeElement.type != "textarea") {
     document.addEventListener("keydown", (e) => {
         if (e.keyCode == 37) {
             let newPage = setPages(curpage-1);
@@ -161,7 +161,7 @@ if (hotKey) {
     let keyup = document.onkeyup;
     document.onkeyup = null;
     document.addEventListener("keyup", (e) => {
-        if (e.keyCode == 37 && curpage == 1) {
+        if (e.keyCode == 37 && curpage == 1 && document.activeElement.type != "textarea") {
             document.addEventListener("keyup", keyup);
         }
         else {

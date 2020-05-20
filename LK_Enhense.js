@@ -349,9 +349,9 @@ function setPages(p) {
 function scrollToPost(p) {
     let pagelist = document.querySelector("#postlist").children;
     if (p == "top") {
-        for (let i of pagelist) {
-            if (i.hidden == false) {
-                i.scrollIntoView();
+        for (let i = 2; i < pagelist.length; i += 1) {
+            if (pagelist[i].hidden == false) {
+                pagelist[i].scrollIntoView();
                 return;
             }
         }
